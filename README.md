@@ -24,17 +24,88 @@ In timing diagram Q0 is changing as soon as the negative edge of clock pulse is 
 
 **Procedure**
 
-/* write all the steps invloved */
+1.Increment count on each positive edge of the clock. 
+
+2.Reset count to zero when it reaches 15.
+
+3.Generate clock signal (clk). 
+
+4.Instantiate the RippleCounter module. 
+
+5.Conduct functional testing by displaying the count at each clock cycle for 16 cycles. 
 
 **PROGRAM**
 
-/* Program for 4 Bit Ripple Counter and verify its truth table in quartus using Verilog programming.
+~~~
+module ripple_counter(
+    input wire clk,        // Clock input
+    input wire reset,      // Asynchronous reset
+    output wire [3:0] q    // 4-bit output
+);
 
- Developed by: RegisterNumber:
-*/
+    wire clk1, clk2, clk3;
+
+    // First flip-flop (LSB)
+    T_FF tff0 (
+        .clk(clk),
+        .reset(reset),
+        .q(q[0]),
+        .clk_out(clk1)
+    );
+
+    // Second flip-flop
+    T_FF tff1 (
+        .clk(clk1),
+        .reset(reset),
+        .q(q[1]),
+        .clk_out(clk2)
+    );
+
+    // Third flip-flop
+    T_FF tff2 (
+        .clk(clk2),
+        .reset(reset),
+        .q(q[2]),
+        .clk_out(clk3)
+    );
+
+    // Fourth flip-flop (MSB)
+    T_FF tff3 (
+        .clk(clk3),
+        .reset(reset),
+        .q(q[3]),
+        .clk_out()
+    );
+
+endmodule
+~~~
+~~~
+// Toggle Flip-Flop Module
+module T_FF (
+    input wire clk,
+    input wire reset,
+    output reg q,
+    output wire clk_out
+);
+    assign clk_out = q;  // Output to next stage
+
+    always @(negedge clk or posedge reset) begin
+        if (reset)
+            q <= 0;
+        else
+            q <= ~q;
+    end
+endmodule
+~~~
 
 **RTL LOGIC FOR 4 Bit Ripple Counter**
+![image](https://github.com/user-attachments/assets/c9d1d422-e1fe-44b9-9563-4f07511a46b2)
+
 
 **TIMING DIGRAMS FOR 4 Bit Ripple Counter**
+![image](https://github.com/user-attachments/assets/528ab066-d0f4-4cd8-992a-d8f9d616b962)
+
 
 **RESULTS**
+
+Thus the given 4 Bit Ripple Counter are implemented using verilog and validated their functionality using functional tables are verified in Quartus II.
